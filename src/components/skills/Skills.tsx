@@ -1,87 +1,106 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useInView } from 'framer-motion';
+import { useRef } from 'react';
 
-const categories = [
+const skillCategories = [
   {
     title: 'Languages',
-    skills: ['TypeScript', 'JavaScript', 'Python', 'C++', 'HTML/CSS'],
-    color: 'from-blue-400 to-cyan-400',
+    icon: '{}',
+    color: 'bg-pink-soft border-pink-medium/30',
+    iconBg: 'bg-pink-medium/30 text-pink-700',
+    skills: ['C++', 'JavaScript', 'C', 'PHP', 'Java', 'Python'],
   },
   {
-    title: 'Frameworks',
-    skills: ['React', 'Next.js', 'Node.js', 'Tailwind CSS', 'Three.js', 'Framer Motion'],
-    color: 'from-purple-400 to-pink-400',
+    title: 'Frameworks & Libraries',
+    icon: '⚡',
+    color: 'bg-blue-soft border-blue-medium/30',
+    iconBg: 'bg-blue-medium/30 text-blue-700',
+    skills: ['React.js', 'Node.js', 'Express.js', 'HTML', 'CSS', 'Bootstrap', 'Tailwind CSS'],
   },
   {
-    title: 'Tools & DB',
-    skills: ['Git', 'Docker', 'MongoDB', 'PostgreSQL', 'Figma', 'AWS'],
-    color: 'from-green-400 to-emerald-400',
+    title: 'Tools & Platforms',
+    icon: '🛠',
+    color: 'bg-yellow-soft border-yellow-medium/30',
+    iconBg: 'bg-yellow-medium/30 text-yellow-700',
+    skills: ['MySQL', 'MongoDB', 'AWS', 'Git', 'GitHub', 'VS Code', 'Canva'],
   },
   {
-    title: 'Core Expertise',
-    skills: ['Interaction Design', 'Team Leadership', 'Agile Methodology', 'UX Research'],
-    color: 'from-orange-400 to-yellow-400',
-  }
+    title: 'Soft Skills',
+    icon: '🤝',
+    color: 'bg-white border-gray-100',
+    iconBg: 'bg-gray-100 text-gray-600',
+    skills: ['Problem-Solving', 'Team Collaboration', 'Adaptability', 'Leadership'],
+  },
 ];
 
-export default function Skills() {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+const cardColors: Record<string, string> = {
+  'Languages': 'text-pink-700 bg-pink-soft/70',
+  'Frameworks & Libraries': 'text-blue-700 bg-blue-soft/70',
+  'Tools & Platforms': 'text-yellow-700 bg-yellow-soft/70',
+  'Soft Skills': 'text-gray-700 bg-gray-100',
+};
+
+function SkillCard({ category, index }: { category: typeof skillCategories[0]; index: number }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '-60px' });
 
   return (
-    <section id="skills" className="relative w-full min-h-screen py-20 px-6 lg:px-12 flex flex-col items-center justify-center overflow-hidden">
-      
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true, margin: "-100px" }}
-        className="z-10 w-full max-w-[1400px] mb-12"
-      >
-        <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">
-          Technical <span className="text-softGrey font-normal">Expertise</span>
-        </h2>
-      </motion.div>
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 32 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.55, delay: index * 0.1, ease: 'easeOut' }}
+      className={`card p-6 border ${category.color}`}
+    >
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-5">
+        <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-base font-bold ${category.iconBg}`}>
+          {category.icon}
+        </div>
+        <h3 className="font-semibold text-brand-dark text-base">{category.title}</h3>
+      </div>
 
-      <div className="z-10 w-full max-w-[1400px] grid grid-cols-1 md:grid-cols-2 gap-8 relative pb-20">
-        {categories.map((cat, i) => (
-          <motion.div 
-            key={cat.title}
-            className={`glass-panel p-8 md:p-12 relative overflow-visible transition-all duration-500`}
-            onMouseEnter={() => setHoveredIndex(i)}
-            onMouseLeave={() => setHoveredIndex(null)}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: i * 0.1 }}
-            viewport={{ once: true, margin: "-50px" }}
+      {/* Skills */}
+      <div className="flex flex-wrap gap-2">
+        {category.skills.map((skill) => (
+          <span
+            key={skill}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm cursor-default ${cardColors[category.title]}`}
           >
-            <div className="flex items-center gap-4 mb-8">
-              <h3 className="text-2xl font-bold text-white tracking-wide">{cat.title}</h3>
-            </div>
-            
-            <div className="flex flex-wrap gap-3">
-              {cat.skills.map((skill, j) => (
-                <motion.span
-                  key={skill}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ 
-                    opacity: 1, 
-                    scale: 1,
-                    borderColor: hoveredIndex === i ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.2)',
-                    color: hoveredIndex === i ? '#fff' : 'rgba(255,255,255,0.7)'
-                  }}
-                  transition={{ duration: 0.3, delay: j * 0.05 }}
-                  className="glass-pill"
-                >
-                  {skill}
-                </motion.span>
-              ))}
-            </div>
-            
-            <div className="absolute top-8 right-8 w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white/50 opacity-0 group-hover:opacity-100 transition-opacity">
-               ↗
-            </div>
-          </motion.div>
+            {skill}
+          </span>
         ))}
+      </div>
+    </motion.div>
+  );
+}
+
+export default function Skills() {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '-60px' });
+
+  return (
+    <section id="skills" className="section-padding bg-gray-50/60">
+      <div className="section-container">
+        {/* Section Header */}
+        <motion.div
+          ref={ref}
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.55 }}
+          className="text-center mb-14"
+        >
+          <p className="section-label">What I work with</p>
+          <h2 className="section-title">My Skills</h2>
+          <div className="divider bg-gradient-to-r from-pink-soft to-blue-soft mx-auto mt-4" />
+        </motion.div>
+
+        {/* Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {skillCategories.map((category, i) => (
+            <SkillCard key={category.title} category={category} index={i} />
+          ))}
+        </div>
       </div>
     </section>
   );

@@ -1,84 +1,100 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useInView } from 'framer-motion';
+import { useRef } from 'react';
 import { ExternalLink, Award } from 'lucide-react';
 
-const certs = [
-  { id: 1, title: 'AWS Certified Cloud Practitioner', issuer: 'Amazon Web Services', date: '2023', link: '#' },
-  { id: 2, title: 'Frontend Developer (React)', issuer: 'HackerRank', date: '2023', link: '#' },
-  { id: 3, title: 'Google IT Automation with Python', issuer: 'Coursera', date: '2022', link: '#' },
-  { id: 4, title: 'Machine Learning Specialization', issuer: 'DeepLearning.AI', date: '2024', link: '#' },
+const certifications = [
+  {
+    title: 'Cloud Computing',
+    issuer: 'NPTEL',
+    color: 'border-l-blue-400',
+    bg: 'hover:bg-blue-50/50',
+    badge: 'badge-blue',
+    link: '#',
+  },
+  {
+    title: 'Computer Networking',
+    issuer: 'Coursera',
+    color: 'border-l-pink-400',
+    bg: 'hover:bg-pink-50/50',
+    badge: 'badge-pink',
+    link: '#',
+  },
+  {
+    title: 'Data Structures & Algorithms',
+    issuer: 'GeeksforGeeks',
+    color: 'border-l-green-400',
+    bg: 'hover:bg-green-50/50',
+    badge: 'badge-yellow',
+    link: '#',
+  },
+  {
+    title: 'Python Training',
+    issuer: 'Code Sprint',
+    color: 'border-l-yellow-400',
+    bg: 'hover:bg-yellow-50/50',
+    badge: 'badge-yellow',
+    link: '#',
+  },
+  {
+    title: 'Leadership',
+    issuer: 'Saylor Academy',
+    color: 'border-l-purple-400',
+    bg: 'hover:bg-purple-50/50',
+    badge: 'badge-pink',
+    link: '#',
+  },
 ];
 
-const FlipCard = ({ cert }: { cert: typeof certs[0] }) => {
-  const [isFlipped, setIsFlipped] = useState(false);
-
-  return (
-    <div 
-      className="relative w-full h-72 perspective-[1500px] cursor-pointer"
-      onClick={() => setIsFlipped(!isFlipped)}
-    >
-      <motion.div
-        className="w-full h-full preserve-3d relative"
-        initial={false}
-        animate={{ rotateY: isFlipped ? 180 : 0 }}
-        transition={{ duration: 0.8, type: "spring", stiffness: 260, damping: 20 }}
-      >
-        {/* Front */}
-        <div className="absolute inset-0 backface-hidden glass-panel p-6 flex flex-col items-center justify-center text-center group border-white/10 hover:border-violetGlow/50 transition-colors duration-500 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)]">
-          <Award className="w-16 h-16 text-electricBlue mb-6 group-hover:scale-110 group-hover:text-violetGlow transition-all duration-500" />
-          <h3 className="text-xl font-bold text-white mb-2 leading-tight">{cert.title}</h3>
-          <p className="text-softGrey text-sm font-medium">{cert.issuer}</p>
-          <div className="absolute top-4 right-4 animate-pulse">
-            <div className="w-2.5 h-2.5 rounded-full bg-violetGlow shadow-[0_0_10px_rgba(128,0,255,0.8)]" />
-          </div>
-          <p className="absolute bottom-4 text-xs text-softGrey/50 opacity-0 group-hover:opacity-100 transition-opacity">Click to flip</p>
-        </div>
-
-        {/* Back */}
-        <div 
-          className="absolute inset-0 backface-hidden glass-panel p-6 flex flex-col items-center justify-center text-center bg-white/5 border-electricBlue/30 shadow-[0_0_30px_rgba(0,240,255,0.15)]"
-          style={{ transform: "rotateY(180deg)" }}
-        >
-          <p className="text-softGrey mb-3 text-sm font-semibold tracking-wider uppercase">Issued: {cert.date}</p>
-          <h3 className="text-xl font-bold text-white mb-8 leading-tight">{cert.title}</h3>
-          
-          <a
-            href={cert.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            className="glass-button py-2.5 px-6 text-sm bg-electricBlue/20 border-electricBlue/40 hover:bg-electricBlue/30 hover:shadow-[0_0_20px_rgba(0,240,255,0.5)] transition-all flex items-center gap-2 group"
-          >
-            Verify Credential <ExternalLink size={16} className="group-hover:translate-x-1 transition-transform" />
-          </a>
-        </div>
-      </motion.div>
-    </div>
-  );
-};
-
 export default function Certifications() {
-  return (
-    <section id="certifications" className="relative w-full min-h-screen py-24 flex flex-col items-center justify-center border-t border-white/5 overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-violetGlow/5 via-zinc-950 to-zinc-950 z-0 pointer-events-none" />
-      
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-        className="z-10 text-center mb-16"
-      >
-        <h2 className="text-4xl md:text-5xl font-extrabold mb-4 text-white drop-shadow-lg">
-          Professional <span className="text-transparent bg-clip-text bg-gradient-to-r from-electricBlue to-violetGlow">Certifications</span>
-        </h2>
-        <p className="text-softGrey font-light text-lg">Click cards to flip and verify credentials</p>
-      </motion.div>
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '-60px' });
 
-      <div className="z-10 w-full max-w-6xl px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        {certs.map((cert) => (
-          <FlipCard key={cert.id} cert={cert} />
-        ))}
+  return (
+    <section id="certifications" className="section-padding bg-gray-50/60">
+      <div className="section-container">
+        {/* Header */}
+        <motion.div
+          ref={ref}
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.55 }}
+          className="text-center mb-14"
+        >
+          <p className="section-label">What I've earned</p>
+          <h2 className="section-title">Certifications</h2>
+          <div className="divider bg-gradient-to-r from-yellow-soft to-pink-soft mx-auto mt-4" />
+        </motion.div>
+
+        {/* Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {certifications.map((cert, i) => (
+            <motion.a
+              key={cert.title}
+              href={cert.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              initial={{ opacity: 0, y: 28 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: i * 0.08, ease: 'easeOut' }}
+              className={`card p-6 border-l-4 ${cert.color} ${cert.bg} flex items-start gap-4 group cursor-pointer`}
+            >
+              <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                <Award size={18} className="text-brand-gray" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-brand-dark text-sm mb-1 group-hover:text-blue-600 transition-colors">
+                  {cert.title}
+                </h3>
+                <span className={`${cert.badge} text-xs`}>{cert.issuer}</span>
+              </div>
+              <ExternalLink
+                size={14}
+                className="text-gray-300 group-hover:text-brand-gray transition-colors flex-shrink-0 mt-0.5"
+              />
+            </motion.a>
+          ))}
+        </div>
       </div>
     </section>
   );
