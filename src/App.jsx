@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import Lenis from '@studio-freight/lenis';
+import Lenis from 'lenis';
 
 import IntroScreen from './components/sections/IntroScreen';
 import Navbar from './components/layout/Navbar';
