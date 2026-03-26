@@ -13,7 +13,6 @@ import CV from './components/sections/CV';
 import Contact from './components/sections/Contact';
 
 function App() {
-  const [isDesktop, setIsDesktop] = useState(true);
   const [loadingComplete, setLoadingComplete] = useState(false);
 
   useEffect(() => {
@@ -39,7 +38,8 @@ function App() {
     requestAnimationFrame(raf);
 
     const handleResize = () => {
-      setIsDesktop(window.innerWidth > 768);
+      // Size detection for potential future use
+      window.innerWidth > 768;
     };
     handleResize();
     window.addEventListener('resize', handleResize);
